@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Detektif Suku Kata – Media Interaktif PID</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#E6F3FF;--ink:#12285C;--card:#FFFFFF;--line:#12285C;--soft:#BFDBF5;--ok:#0E8A7B;--no:#C93A1F;--c1:#E4572E;--c3:#F2A900;--c4:#6B45C4}
+html{scroll-padding-top:env(safe-area-inset-top,0px);color-scheme:light dark}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0E1A3A;--ink:#EAF2FF;--card:#1A2A58;--line:#8FB2FF;--soft:#33497F;--ok:#4FD6C3;--no:#FF8A70;--c1:#FF7A54;--c3:#FFC83D;--c4:#B8A4FF;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0E1A3A;--ink:#EAF2FF;--card:#1A2A58;--line:#8FB2FF;--soft:#33497F;--ok:#4FD6C3;--no:#FF8A70;--c1:#FF7A54;--c3:#FFC83D;--c4:#B8A4FF;color-scheme:dark}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Baloo 2','Trebuchet MS',system-ui,sans-serif;font-size:clamp(18px,2.2vw,26px);line-height:1.35}
+.wrap{max-width:1100px;margin:0 auto;padding:14px 16px 28px}
+h1{font-size:clamp(32px,6vw,64px);line-height:1.02;margin:0 0 .15em;font-weight:800}
+h2{font-size:clamp(22px,3vw,34px);line-height:1.15;margin:0 0 .6em;font-weight:700}
+p{margin:.3em 0}
+nav{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 18px}
+button{font:inherit;color:inherit}
+.btn,.nb{font-weight:700;border:3px solid var(--line);background:var(--card);border-radius:16px;padding:8px 18px;min-height:56px;cursor:pointer;box-shadow:0 4px 0 var(--line);touch-action:manipulation}
+.btn:active,.nb:active,.pick:active{transform:translateY(3px);box-shadow:0 1px 0 var(--line)}
+.nb[aria-current="true"]{background:var(--c3);color:#12285C}
+.go{background:var(--c4);color:#fff;border-color:var(--line)}
+:root[data-theme="dark"] .go{color:#12285C}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .go{color:#12285C}}
+:focus-visible{outline:4px solid var(--c4);outline-offset:3px}
+.panel{background:var(--card);border:3px solid var(--line);border-radius:24px;padding:clamp(14px,3vw,32px);box-shadow:0 7px 0 var(--line)}
+.blk{display:inline-block;min-width:1.5em;padding:.05em .4em;border:4px solid var(--line);border-radius:16px;font-weight:800;font-size:clamp(44px,10vw,120px);line-height:1.15;color:#12285C;text-align:center;margin:6px;transition:transform .15s,box-shadow .15s;cursor:pointer}
+.sm .blk{font-size:clamp(30px,6vw,60px);margin:4px}
+.b0{background:#FFB4A0}.b1{background:#9BE3D7}.b2{background:#FFD966}.b3{background:#CDBBFF}
+.blk.on{transform:translateY(-16px) scale(1.1);box-shadow:0 12px 0 var(--line)}
+.center{text-align:center}
+.menu{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:22px}
+.menu .btn{font-size:1.05em;padding:14px}
+.em{font-size:clamp(56px,10vw,110px);line-height:1}
+.picks{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+.pick{border:3px solid var(--line);background:var(--card);border-radius:16px;padding:8px;cursor:pointer;font-weight:700;box-shadow:0 4px 0 var(--line);display:flex;flex-direction:column;align-items:center}
+.pick .em{font-size:48px}
+.pick.sel{background:var(--c3);color:#12285C}
+.stage{margin-top:22px;padding-top:14px;border-top:4px dashed var(--soft);text-align:center}
+.dots{min-height:1.6em;font-size:1.4em;letter-spacing:.2em}
+.row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:14px}
+.letters{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;margin:10px 0}
+.lt{font-size:clamp(56px,13vw,130px);font-weight:800;line-height:1.1}
+.gap{width:clamp(22px,4vw,36px);height:clamp(80px,14vw,140px);border:0;background:none;cursor:pointer;position:relative}
+.gap::after{content:"";position:absolute;left:50%;top:4px;bottom:4px;border-left:4px dashed var(--soft);transform:translateX(-50%)}
+.gap.on::after{border-left:9px solid var(--c1)}
+.msg{min-height:2.6em;text-align:center;font-weight:700;margin-top:14px}
+.msg.ok{color:var(--ok)}.msg.no{color:var(--no)}
+.slots,.pool{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin:14px 0}
+.slot{min-width:clamp(80px,14vw,150px);height:clamp(70px,12vw,120px);border:4px dashed var(--line);border-radius:16px;background:transparent;font-size:clamp(30px,6vw,60px);font-weight:800;cursor:pointer;color:#12285C}
+.slot.f{border-style:solid}
+.tile{min-width:clamp(80px,14vw,150px);height:clamp(70px,12vw,120px);border:4px solid var(--line);border-radius:16px;font-size:clamp(30px,6vw,60px);font-weight:800;cursor:grab;color:#12285C;box-shadow:0 5px 0 var(--line)}
+.tile.used{visibility:hidden}
+.opts{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin-top:12px}
+.opt{width:clamp(80px,16vw,140px);height:clamp(80px,16vw,140px);font-size:clamp(40px,8vw,72px);color:#12285C}
+.word{font-size:clamp(34px,7vw,72px);font-weight:800;text-align:center}
+.timer{font-size:clamp(70px,16vw,170px);font-weight:800;text-align:center;line-height:1}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+textarea{width:100%;min-height:140px;font:inherit;border:3px solid var(--line);border-radius:14px;padding:10px;background:var(--bg);color:var(--ink)}
+.who{font-size:clamp(40px,9vw,96px);font-weight:800;text-align:center;min-height:1.2em;margin:10px 0}
+.foot{margin-top:18px;font-size:.8em;opacity:.8;text-align:center}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav id="nav" aria-label="Menu"></nav>
+<main id="view"></main>
+<p class="foot">Bahasa Indonesia kelas 2, Bab 2 “Ayo, Bermain”. Disusun oleh Hasliana, S.Pd., SD Negeri 2 Lasusua.</p>
+</div>
+<script>
+const D=[['bola','⚽',['bo','la']],['buku','📖',['bu','ku']],['baju','👕',['ba','ju']],['kaki','🦶',['ka','ki']],['keju','🧀',['ke','ju']],['roti','🍞',['ro','ti']],['boneka','🧸',['bo','ne','ka']],['sepeda','🚲',['se','pe','da']],['kelinci','🐰',['ke','lin','ci']],['kelereng','🔵',['ke','le','reng']],['makanan','🍱',['ma','ka','nan']],['layang-layang','🪁',['la','yang','la','yang']]];
+const $=s=>document.querySelector(s),V=$('#view');
+const rnd=a=>a[Math.floor(Math.random()*a.length)];
+const shuf=a=>a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(x=>x[1]);
+const tok=w=>w.match(/ng|ny|kh|sy|./g);
+const say=t=>{try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='id-ID';u.rate=.75;speechSynthesis.speak(u)}catch(e){}};
+const blocks=(syl,on=-1,sayIt=false)=>syl.map((s,i)=>`<span class="blk b${i%4}${i===on?' on':''}"${sayIt?` data-say="${s}"`:''}>${s}</span>`).join('');
+const cum=d=>{let n=0;return d[2].slice(0,-1).map(s=>n+=tok(s).length)};
+const NAV=[['home','🏠','Beranda'],['kenali','👀','Kenali'],['pecah','✂️','Pecah kata'],['susun','🧩','Susun kata'],['kuis','⭐','Kuis kilat'],['alat','⏱️','Alat bantu']];
+const views={};let cur='home';
+function go(v){cur=v;$('#nav').innerHTML=NAV.map(n=>`<button class="nb" aria-current="${n[0]===v}" onclick="go('${n[0]}')">${n[1]} ${n[2]}</button>`).join('');views[v]();window.scrollTo(0,0)}
+document.addEventListener('click',e=>{const b=e.target.closest('.blk[data-say]');if(b){b.classList.add('on');say(b.dataset.say);setTimeout(()=>b.classList.remove('on'),450)}});
+
+views.home=()=>{V.innerHTML=`<div class="panel center"><h1>Detektif Suku Kata</h1><p>Ketuk kotak warna, dengarkan, lalu tepuk bersama!</p><div>${blocks(['bo','la'],-1,true)}</div><div class="menu">${NAV.slice(1).map(n=>`<button class="btn" onclick="go('${n[0]}')">${n[1]} ${n[2]}</button>`).join('')}</div></div>`};
+
+let kw=D[0];
+views.kenali=()=>{V.innerHTML=`<div class="panel"><h2>Pilih gambar, lalu tepuk suku katanya</h2><div class="picks">${D.map((d,i)=>`<button class="pick${d===kw?' sel':''}" onclick="kpick(${i})"><span class="em">${d[1]}</span>${d[0]}</button>`).join('')}</div><div class="stage"><div class="em">${kw[1]}</div><div id="kb">${blocks(kw[2])}</div><p>${kw[2].join('-')} berarti <b>${kw[2].length} suku kata</b></p><div id="dots" class="dots" aria-live="polite"></div><div class="row"><button class="btn go" onclick="ktap()">👏 Tepuk suku kata</button><button class="btn" onclick="say('${kw[0]}')">🔊 Ucapkan kata</button></div></div></div>`};
+function kpick(i){kw=D[i];views.kenali()}
+function ktap(){const bs=document.querySelectorAll('#kb .blk');$('#dots').textContent='';kw[2].forEach((s,i)=>setTimeout(()=>{bs.forEach(b=>b.classList.remove('on'));bs[i].classList.add('on');$('#dots').textContent+='👏';say(s);if(i===kw[2].length-1)setTimeout(()=>bs[i].classList.remove('on'),600)},i*800))}
+
+const PD=D.filter(d=>!d[0].includes('-'));let pw,marks=new Set();
+views.pecah=()=>{if(!pw)pw=rnd(PD);const t=tok(pw[0]);V.innerHTML=`<div class="panel center"><h2>Ketuk celah untuk memotong kata menjadi suku kata</h2><div class="em">${pw[1]}</div><div class="letters">${t.map((l,i)=>`<span class="lt">${l}</span>${i<t.length-1?`<button class="gap${marks.has(i+1)?' on':''}" aria-label="Potong setelah ${l}" onclick="ptog(${i+1})"></button>`:''}`).join('')}</div><div class="row"><button class="btn go" onclick="pchk()">✔ Periksa</button><button class="btn" onclick="say('${pw[0]}')">🔊 Dengar</button><button class="btn" onclick="pnew()">Kata lain</button></div><div class="msg" id="msg" role="status"></div></div>`};
+function ptog(i){marks.has(i)?marks.delete(i):marks.add(i);views.pecah()}
+function pnew(){pw=rnd(PD.filter(d=>d!==pw));marks=new Set();views.pecah()}
+function pchk(){const c=cum(pw),ok=c.length===marks.size&&c.every(x=>marks.has(x)),m=$('#msg');if(ok){m.className='msg ok';m.innerHTML=`Benar! ${pw[0]} punya ${pw[2].length} suku kata.<div class="sm">${blocks(pw[2],-1,true)}</div>`;say(pw[2].join(' '))}else{m.className='msg no';m.textContent='Belum tepat. Tepuk katanya dulu, lalu ketuk celah di antara suku kata.'}}
+
+let sw,slots,pool;
+function snew(){sw=rnd(D.filter(d=>d!==sw));slots=sw[2].map(()=>null);pool=shuf(sw[2].map((s,i)=>({id:i,s,u:false})));views.susun()}
+views.susun=()=>{if(!sw)return snew();V.innerHTML=`<div class="panel center"><h2>Seret atau ketuk suku kata untuk menyusun kata</h2><div class="em">${sw[1]}</div><div class="slots">${slots.map((id,k)=>{const t=id==null?null:pool.find(x=>x.id===id);return `<button class="slot${t?' f b'+(t.id%4):''}" aria-label="Kotak ${k+1}" onclick="srm(${k})" ondragover="event.preventDefault()" ondrop="sdrop(event,${k})">${t?t.s:''}</button>`}).join('')}</div><div class="pool">${pool.map(t=>`<button class="tile b${t.id%4}${t.u?' used':''}" draggable="true" ondragstart="event.dataTransfer.setData('text',${t.id})" onclick="sput(${t.id})">${t.s}</button>`).join('')}</div><div class="row"><button class="btn go" onclick="schk()">✔ Periksa</button><button class="btn" onclick="slots=slots.map(()=>null);pool.forEach(t=>t.u=false);views.susun()">Ulangi</button><button class="btn" onclick="snew()">Kata lain</button></div><div class="msg" id="msg" role="status"></div></div>`};
+function sput(id,k){const t=pool.find(x=>x.id===id);if(t.u)return;if(k==null)k=slots.indexOf(null);if(k<0)return;if(slots[k]!=null)pool.find(x=>x.id===slots[k]).u=false;slots[k]=id;t.u=true;views.susun()}
+function srm(k){if(slots[k]==null)return;pool.find(x=>x.id===slots[k]).u=false;slots[k]=null;views.susun()}
+function sdrop(e,k){e.preventDefault();sput(+e.dataTransfer.getData('text'),k)}
+function schk(){const m=$('#msg');if(slots.includes(null)){m.className='msg no';m.textContent='Isi semua kotak dulu.';return}const w=slots.map(id=>pool.find(x=>x.id===id).s).join('');if(w===sw[0].replace('-','')){m.className='msg ok';m.innerHTML=`Hebat! ${sw[0]}<div class="sm">${blocks(sw[2],-1,true)}</div>`;say(sw[0])}else{m.className='msg no';m.textContent='Belum tepat. Ketuk kotak untuk mengembalikan suku kata, lalu coba lagi.'}}
+
+let Q,qi,sc,lock;
+function qstart(){Q=shuf(D).slice(0,8);qi=0;sc=0;lock=false;views.kuis()}
+views.kuis=()=>{if(!Q)return qstart();if(qi>=Q.length){V.innerHTML=`<div class="panel center"><h2>Skormu ${sc} dari ${Q.length}</h2><div class="em">${'⭐'.repeat(Math.max(1,Math.round(sc/2)))}</div><p>Bagaimana perasaanmu belajar hari ini?</p><div class="row">${[['😊','Senang'],['🙂','Biasa'],['🤔','Belum paham']].map(e=>`<button class="btn" onclick="$('#thx').textContent='Terima kasih sudah bercerita!'"><span class="em" style="font-size:56px">${e[0]}</span><br>${e[1]}</button>`).join('')}</div><p id="thx" role="status"></p><div class="row"><button class="btn go" onclick="qstart()">Main lagi</button></div></div>`;return}
+const d=Q[qi];V.innerHTML=`<div class="panel center"><h2>Soal ${qi+1} dari ${Q.length}: berapa suku kata pada kata ini?</h2><div class="em">${d[1]}</div><div class="word">${d[0]}</div><div class="row"><button class="btn" onclick="say('${d[0]}')">🔊 Dengar</button></div><div class="opts">${[1,2,3,4].map(n=>`<button class="btn opt b${n-1}" onclick="qans(${n})">${n}</button>`).join('')}</div><div class="msg" id="msg" role="status"></div></div>`};
+function qans(n){if(lock)return;lock=true;const d=Q[qi],ok=n===d[2].length,m=$('#msg');if(ok)sc++;m.className='msg '+(ok?'ok':'no');m.innerHTML=`${ok?'Benar!':'Hampir!'} ${d[0]} punya ${d[2].length} suku kata.<div class="sm">${blocks(d[2],-1,true)}</div><button class="btn go" onclick="qi++;lock=false;views.kuis()">Lanjut</button>`}
+
+let tm=0,ti=null;
+const tdraw=()=>{const e=$('#td');if(e)e.textContent=String(Math.floor(tm/60)).padStart(2,'0')+':'+String(tm%60).padStart(2,'0')};
+function tset(m){clearInterval(ti);ti=null;tm=m*60;tdraw();const e=$('#tm');if(e)e.textContent=''}
+function tgo(){if(ti){clearInterval(ti);ti=null;return}if(tm<=0)return;ti=setInterval(()=>{tm--;tdraw();if(tm<=0){clearInterval(ti);ti=null;const e=$('#tm');if(e)e.textContent='Waktu habis!';try{const a=new AudioContext(),o=a.createOscillator();o.connect(a.destination);o.frequency.value=880;o.start();setTimeout(()=>o.stop(),900)}catch(x){}}},1000)}
+let names='';
+views.alat=()=>{V.innerHTML=`<div class="two"><div class="panel"><h2>Pengatur waktu</h2><div class="timer" id="td">00:00</div><div class="msg" id="tm" role="status"></div><div class="row">${[1,3,5,10].map(m=>`<button class="btn" onclick="tset(${m})">${m} menit</button>`).join('')}</div><div class="row"><button class="btn go" onclick="tgo()">▶ Mulai / Jeda</button><button class="btn" onclick="tset(0)">Ulang</button></div></div><div class="panel"><h2>Undi nama</h2><label for="nm">Tulis satu nama siswa per baris</label><textarea id="nm" oninput="names=this.value">${names}</textarea><div class="who" id="who" aria-live="polite"></div><div class="row"><button class="btn go" onclick="draw()">🎲 Undi</button></div></div></div>`;tdraw()};
+function draw(){const l=names.split('\n').map(x=>x.trim()).filter(Boolean),w=$('#who');if(!l.length){w.textContent='Isi nama dulu';return}let n=0;const id=setInterval(()=>{w.textContent=rnd(l);if(++n>18){clearInterval(id)}},90)}
+go('home');
+</script>
+</body>
+</html>
